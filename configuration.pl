@@ -1,8 +1,6 @@
 :-module(configuration, [clause_limit/1
-                        ,encapsulation_predicate/1
                         ,example_clauses/1
                         ,experiment_file/2
-                        ,fetch_clauses/1
                         ,fold_recursive/1
                         ,generalise_learned_metarules/1
                         ,invented_symbol_prefix/1
@@ -15,16 +13,15 @@
 			,metarule_constraints/2
                         ,metarule_learning_limits/1
                         ,metarule_formatting/1
+                        ,minimal_program_size/2
 			,recursive_reduction/1
                         ,reduce_learned_metarules/1
 			,reduction/1
 			,resolutions/1
 			,symbol_range/2
-                        ,table_meta_interpreter/1
                         ,tautology/1
 			,theorem_prover/1
                         ,unfold_invented/1
-                        ,untable_meta_interpreter/1
 			,op(100,xfx,metarule)
 			]).
 
@@ -51,12 +48,10 @@ quick description of their use.
 
 * :-debug(Subject): enable/disable logging for Subject.
 * clause_limit/1: maximum number of clauses learned from one example.
-* encapsulation_predicate/1: predicate symbol used in encapsulation.
 * example_clauses/1: how to treat examples with bodies.
 * experiment_file/2: path to the current experiment file.
 * fold_recursive/1: fold overspecial programs to introduce recursion.
 * generalise_learned_metarules/1: generalise TOIL-learned metarules.
-* invented_symbol_prefix/1: used to compose invented predicate symbols.
 * learner/1: name of the current learning system (louise).
 * learning_predicate/1: current learning predicate.
 * listing_limit/1: maximum lines printed when listing a MIL problem.
@@ -66,13 +61,11 @@ quick description of their use.
 * metarule_constraints/2: metasubstitution constraints for Louise.
 * metarule_learning_limits/1: control over-generation in TOIL.
 * metarule_formatting/1: how to pretty-print metarules.
-* minimal_program_size/2: lower limit for greedy learning; not used.
+* minimal_program_size/2: lower limit for learn_miminal/[1,2,5]
 * recursive_reduction/1: recursively apply Plotkin's reduction.
 * reduce_learned_metarules/1: apply Plotkin's reduction to TOIL output.
 * reduction/1: how to reduce the Top Program.
 * resolutions/1: depth of resolution in Plotkin's reduction.
-* table_meta_interpreter/1: whether to use tabling in learning.
-* untable_meta_interpreter/1: clear tables between learning attempts.
 * symbol_range/2: used to pretty-print metarule variables.
 * tautology/1: what Louise considers a tautology.
 * theorem_prover/1: resolution or TP operator (doesn't work).
@@ -209,7 +202,6 @@ of setting those configuration options in an experiment file.
 % Dynamic configuration options can be manipulated
 % by means of set_configuration_option/2 in module auxiliaries.
 :- dynamic clause_limit/1
-          ,fetch_clauses/1
           ,invented_symbol_prefix/1
           ,max_error/2
           ,max_invented/1
@@ -217,10 +209,8 @@ of setting those configuration options in an experiment file.
 	  ,recursive_reduction/1
 	  ,reduction/1
 	  ,resolutions/1
-          ,table_meta_interpreter/1
 	  ,theorem_prover/1
-          ,unfold_invented/1
-          ,untable_meta_interpreter/1.
+          ,unfold_invented/1.
 
 % Allows experiment files to define their own, special metarules.
 % BUG: Actually, this doesn't work- module quantifiers, again.
@@ -341,17 +331,6 @@ of setting those configuration options in an experiment file.
 clause_limit(0).
 
 
-%!      encapsulation_predicate(+Symbol) is semidet.
-%
-%       The Symbol used in encapsulation predicates.
-%
-%       Symbol is an atom used as the symbol of encapsulated literals in
-%       clauses of examples, background knowledge, metarules and
-%       invented predicates, alike.
-%
-encapsulation_predicate(m).
-
-
 %!      example_clauses(?What) is semidet.
 %
 %       What to do with example clauses.
@@ -386,71 +365,9 @@ example_clauses(call).
 %
 %	The Path and Module name of an experiment file.
 %
-%experiment_file('data/examples/hello_world.pl',hello_world).
-experiment_file('data/examples/tiny_kinship.pl',tiny_kinship).
-%experiment_file('data/examples/anbn.pl',anbn).
-%experiment_file('data/examples/abduced.pl',abduced).
-%experiment_file('data/examples/user_metarules.pl',user_metarules).
-%experiment_file('data/examples/constraints.pl',constraints).
-%experiment_file('data/examples/mtg_fragment.pl',mtg_fragment).
-%experiment_file('data/examples/recipes.pl',recipes).
-%experiment_file('data/examples/example_invention.pl',path).
-%experiment_file('data/robots/robots.pl',robots).
-%experiment_file('data/coloured_graph/coloured_graph.pl',coloured_graph).
-%experiment_file('data/examples/multi_pred.pl',multi_pred).
-%experiment_file('data/examples/tiny_kinship_toil.pl',tiny_kinship_toil).
-%experiment_file('data/examples/yamamoto.pl',yamamoto).
-%experiment_file('data/examples/recursive_folding.pl',recursive_folding).
-%experiment_file('data/examples/findlast.pl',findlast).
-%experiment_file('data/examples/ackermann.pl',ackermann).
-%experiment_file('data/examples/list_processing.pl',list_processing).
-%experiment_file('data/examples/even_odd.pl',even_odd).
+experiment_file('data/examples/towers_of_hanoi.pl',towers_of_hanoi).
+experiment_file('data/examples/parity.pl',towers_of_hanoi).
 
-
-%!      fetch_clauses(?Whence) is semidet.
-%
-%       Where to fetch clauses from during meta-interpretation.
-%
-%       Clauses are "fetched" during meta-interpretation by the
-%       predicate clause/7. A different clause of this predicate fetches
-%       clauses from different sources and this option is used to
-%       control which sources will be allowed in a learning attempt.
-%
-%       Whence can be any subset of: [builtins,bk,hypothesis,metarules].
-%       These are interpreted as follows:
-%
-%       * builtins: clauses will be fetched from built-in and library
-%       predicates loaded into memory. This option should be needed most
-%       of the time when built-ins and library predicates are used in
-%       background knowledge definitions.
-%
-%       * bk: clauses will be fetched from the set of clauses of the
-%       definitions of predicates listed in the second argument of
-%       background_knowledge/2 in the current experiment file.
-%
-%       * hypothesis: clauses will be fetched from the set of clauses
-%       added to a hypothesis so-far. These clauses are stored in the
-%       metasubstitution accumulator in prove/6 as metasubstitution
-%       atoms and must be expanded to be used in a proof (this is
-%       handled internally by prove/6). Enabling this setting allows
-%       arbitrary recursion between clauses in the learned hypothesis
-%       and all other sources where clauses are fetched from.
-%
-%       * metarules: clauses will be fetched from the list of metarules
-%       given to prove/6. Enabling this setting allows construction of
-%       new clauses by the Vanilla meta-interpreter by resolution with
-%       metarules. This setting should probably never be removed
-%       because without it clause construction is not possible. This
-%       includes clauses of invented predicates.
-%
-fetch_clauses(all).
-%fetch_clauses([builtins,bk,hypothesis,metarules]).
-%fetch_clauses([bk,hypothesis,metarules]).
-%fetch_clauses([builtins,hypothesis,metarules]).
-%fetch_clauses([builtins,bk,metarules]).
-%fetch_clauses([builtins,bk,hypothesis]).
-%fetch_clauses([hypothesis]).
-%fetch_clauses([metarules]).
 
 
 %!      fold_recursive(?Bool) is semidet.
@@ -580,7 +497,7 @@ learner(louise).
 :-dynamic learning_predicate/1.
 :-multifile learning_predicate/1.
 %learning_predicate(learn/1).
-%learning_predicate(learn_greedy/1).
+%learning_predicate(learn_minimal/1).
 % etc.
 
 
@@ -848,8 +765,6 @@ metarule_formatting(quantified).
 %       Each of Minimum, Maximum should be an integer between 1 and
 %       positive infinity ('inf' in Prolog).
 %
-%       @tbd Currently unused.
-%
 minimal_program_size(2,inf).
 
 
@@ -959,22 +874,6 @@ symbol_range(variable, ['X','Y','Z','U','V','W']).
 % Silly. Don't use.
 %symbol_range(predicate, ['Alice','Bob','Carol']).
 %symbol_range(variable, ['Smith','Brown','Carpenter','Miller','Green']).
-
-
-%!      table_meta_interpreter(?Bool) is semidet.
-%
-%       Whether to table the Vanilla meta-interpreter, or not.
-%
-%       Checked by refresh_tables/1 to decide whether to table or
-%       untable the prove/6 Vanilla meta-interpreter, or not.
-%
-%       This option and untable_meta_interpreter/1 are made available so
-%       that the user doesn't have to edit the source code of learning
-%       predicates to control tabling and untabling behaviour.
-%
-%       See refresh_tables/1 for more context.
-%
-table_meta_interpreter(true).
 
 
 %!      tautology(+Clause) is det.
@@ -1096,23 +995,6 @@ theorem_prover(resolution).
 %
 unfold_invented(false).
 %unfold_invented(true).
-
-
-%!      untable_meta_interpreter(?Bool) is semidet.
-%
-%       Whether to untable Vanilla between learning queries.
-%
-%       This predicate is checked by refresh_tables/1 to decide whether
-%       to table or untable the prove/6 Vanilla meta-interpreter, or
-%       not.
-%
-%       This option and table_meta_interpreter/1 are made available so
-%       that the user doesn't have to edit the source code of learning
-%       predicates to control tabling and untabling behaviour.
-%
-%       See refresh_tables/1 for more context.
-%
-untable_meta_interpreter(true).
 
 
 % Loads the current experiment file in the Swi-Prolog IDE when the
