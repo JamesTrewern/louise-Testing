@@ -1,79 +1,71 @@
-:-module(toh, [
-    background_knowledge/2,
-    metarules/2,
-    positive_example/2,
-    negative_example/2,
-    toh/2,
-    move01/2,
-    move02/2,
-    move10/2,
-    move12/2,
-    move20/2,
-    move21/2
-]).
-
-:-use_module(configuration).
-
-background_knowledge(toh/2,[
-    move01/2,
-    move02/2,
-    move10/2,
-    move12/2,
-    move20/2,
-    move21/2
-    % unify/2
-    ]).
-
-configuration:toh_1 metarule 'P(x,y):- Q(x,z), R(z,y)'.
-configuration:toh_2 metarule 'P(x,y):- R(x,y)'.
-metarules(toh/2,[toh_1,toh_2]).
+:-module(hanoi, [background_knowledge/2
+                ,metarules/2
+                ,positive_example/2
+                ,negative_example/2
+                ,move_12/2
+                ,move_13/2
+                ,move_21/2
+                ,move_23/2
+                ,move_31/2
+                ,move_32/2
+                ,can_move/2]).
 
 
-toh([[1,2,3],[],[]],[[],[],[1,2,3]]).
-positive_example(toh/2,toh(A,B)):-
-	toh(A,B).
+:- auxiliaries:set_configuration_option(clause_limit, [4]).
+:- auxiliaries:set_configuration_option(max_invented, [0]).
+configuration:metarule_constraints(M,fail):- M =.. [m,_,P,P|_Ps].
 
-negative_example(toh/2,toh(A,B)):-
-	toh(B,A).
+background_knowledge(toh/2, [move_12/2
+                            ,move_13/2
+                            ,move_21/2
+                            ,move_23/2
+                            ,move_31/2
+                            ,move_32/2
+                            ]).
 
-replace( I, X, [H|T],[H|R]):- 
-    I > 0,
-    I1 is I-1,
-    replace(I1, X, T, R).
-replace(0, X, [_|T], [X|T]).
+metarules(toh/2,[chain,identity]).
 
-can_move([_|_],[]).
-can_move([H1|_],[H2,_]):- H1 < H2.
-move(Towers1,I1,I2,Towers3):-
-    number(I1),
-    number(I2),
-    nth0(I1,Towers1, Tower1),
-    nth0(I2,Towers1, Tower2),
-    can_move(Tower1,Tower2),
-    [Ring|Tower1_2] = Tower1,
-    Tower2_2 = [Ring|Tower2],
-    replace(I1,Tower1_2,Towers1,Towers2),
-    replace(I2,Tower2_2, Towers2,Towers3).
-move01(T1,T2):-
-    move(T1,0,1,T2).
-move02(T1,T2):-
-    move(T1,0,2,T2).
-move10(T1,T2):-
-    move(T1,1,0,T2).
-move12(T1,T2):-
-    move(T1,1,2,T2).
-move20(T1,T2):-
-    move(T1,2,0,T2).
-move21(T1,T2):-
-    move(T1,2,1,T2).
+positive_example(toh/2, toh(s([1,2,3],[],[]),s([],[],[1,2,3])) ).
 
-% solve(Towers1,Towers2):-
-%     solve1(Towers1,Towers2)
-% %%multiple clauses
-% solve1(T1,T2):-
-%     analyse_towers_n(T1),
-%     solve_n(T1,T2),
-% solve_n(T1,T3):-
-%     move(T1,i,i,T2),
-%     solve1(T2,T3),
-% solve_last_n(T1,T2).
+negative_example(toh/2,_):- false.
+
+
+can_move(_,[]).
+can_move(D1,[D2|_]):- D1 < D2.
+
+% Move top disk from pole 1
+move_12(s([D|T1],T2,T3),s(T1,[D|T2],T3)):- can_move(D,T2).
+move_13(s([D|T1],T2,T3),s(T1,T2,[D|T3])):- can_move(D,T3).
+% Move top disk from pole 2
+move_21(s(T1,[D|T2],T3),s([D|T1],T2,T3)):- can_move(D,T1).
+move_23(s(T1,[D|T2],T3),s(T1,T2,[D|T3])):- can_move(D,T3).
+% Move top disk from pole 3
+move_31(s(T1,T2,[D|T3]),s([D|T1],T2,T3)):- can_move(D,T1).
+move_32(s(T1,T2,[D|T3]),s(T1,[D|T2],T3)):- can_move(D,T2).
+
+:-table toh/2.
+
+toh(A,B):-move_12(A,C),move_23(C,B).
+toh(A,B):-move_13(A,C),toh(C,B).
+toh(A,B):-move_21(A,C),toh(C,B).
+toh(A,B):-move_32(A,C),toh(C,B).
+
+% toh(A,B):-move_12(A,C),move_23(C,B).
+% toh(A,B):-move_12(A,C),toh(C,B).
+% toh(A,B):-move_23(A,C),toh(C,B).
+% toh(A,B):-move_31(A,C),toh(C,B).
+
+% toh(A,B):-move_13(A,C),toh(C,B).
+% toh(A,B):-move_21(A,C),toh(C,B).
+% toh(A,B):-move_31(A,C),move_13(C,B).
+% toh(A,B):-move_32(A,C),toh(C,B).
+
+% toh(A,B):-move_12(A,C),toh(C,B).
+% toh(A,B):-move_23(A,C),toh(C,B).
+% toh(A,B):-move_31(A,C),toh(C,B).
+% toh(A,B):-move_32(A,C),move_23(C,B).
+
+% toh(A,B):-move_13(A,C),toh(C,B).
+% toh(A,B):-move_21(A,C),toh(C,B).
+% toh(A,B):-move_31(A,C),move_13(C,B).
+% toh(A,B):-move_32(A,C),toh(C,B).

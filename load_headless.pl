@@ -38,9 +38,9 @@ user:file_search_path(scripts, data(scripts)).
 
 % Large hypotheses may require large tables particularly for evaluation
 % purposes
-:-set_prolog_flag(table_space, 2_147_483_648).
+% :-set_prolog_flag(table_space, 2_147_483_648).
 %:-set_prolog_flag(table_space, 4_294_967_296).
-%:-set_prolog_flag(table_space, 8_589_934_592).
+:-set_prolog_flag(table_space, 8_589_934_592).
 %:-set_prolog_flag(table_space, 17_179_869_184).
 %:-set_prolog_flag(table_space, 34_359_738_368). % 32 GB
 %:-set_prolog_flag(table_space, 49_392_123_904). % 46 GB
