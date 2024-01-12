@@ -365,8 +365,8 @@ example_clauses(call).
 %
 %	The Path and Module name of an experiment file.
 %
-experiment_file('data/examples/towers_of_hanoi.pl',towers_of_hanoi).
-experiment_file('data/examples/parity.pl',towers_of_hanoi).
+experiment_file('data/towers_of_hanoi.pl',towers_of_hanoi).
+% experiment_file('data/examples/parity.pl',towers_of_hanoi).
 
 
 
