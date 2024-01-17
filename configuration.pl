@@ -386,7 +386,9 @@ example_clauses(call).
 %
 %	The Path and Module name of an experiment file.
 %
+% experiment_file('data/towers_of_hanoi.pl',towers_of_hanoi).
 experiment_file('data/towers_of_hanoi.pl',towers_of_hanoi).
+
 
 
 %!      fetch_clauses(?Whence) is semidet.
@@ -1113,3 +1115,5 @@ untable_meta_interpreter(true).
 % DO NOT REMOVE THIS LINE!
 :- experiment_file(P,_)
   ,load_experiment_file(P).
+
+:-load_test_files([]).

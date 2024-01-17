@@ -12,7 +12,7 @@
 
 
 :- auxiliaries:set_configuration_option(clause_limit, [4]).
-:- auxiliaries:set_configuration_option(max_invented, [0]).
+:- auxiliaries:set_configuration_option(max_invented, [3]).
 configuration:metarule_constraints(M,fail):- M =.. [m,_,P,P|_Ps].
 
 background_knowledge(toh/2, [move_12/2
@@ -44,11 +44,6 @@ move_31(s(T1,T2,[D|T3]),s([D|T1],T2,T3)):- can_move(D,T1).
 move_32(s(T1,T2,[D|T3]),s(T1,[D|T2],T3)):- can_move(D,T2).
 
 :-table toh/2.
-
-toh(A,B):-move_12(A,C),move_23(C,B).
-toh(A,B):-move_13(A,C),toh(C,B).
-toh(A,B):-move_21(A,C),toh(C,B).
-toh(A,B):-move_32(A,C),toh(C,B).
 
 % toh(A,B):-move_12(A,C),move_23(C,B).
 % toh(A,B):-move_12(A,C),toh(C,B).
