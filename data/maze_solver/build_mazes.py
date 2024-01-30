@@ -7,7 +7,9 @@ DATA_FOLDER = "./Mazes"
 N = 10
 
 def get_char(n):
-    if n == 1: return 'f'
+    if n == 3: return 'e'
+    elif n ==2 : return 's'
+    elif n == 1: return 'f'
     else: return 'w'
 
 class Maze:
@@ -22,10 +24,15 @@ class Maze:
             for x in range(0,gw,2):
                 self.grid[y,x] = 1
         self.backtracking((0,0))
+        self.grid[0,0] = 2
+        self.grid[-1,-1] = 3
         # self.add_border()
         
     def display(self):
-        img = Image.fromarray(self.grid*255)
+        img = Image.fromarray(self.grid*255).convert("RGB")
+        img.putpixel((0,0),(0,255,0))
+        (h,w) = self.grid.shape
+        img.putpixel((h-1,w-1),(255,0,0))
         img = ImageOps.expand(img,border=1,fill='black')
         img = img.resize((500,500), Image.BOX)
         # img.show()
