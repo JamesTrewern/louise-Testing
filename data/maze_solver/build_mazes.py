@@ -95,7 +95,7 @@ class Maze:
         f = open(f"{DATA_FOLDER}/Code/{id}.pl", "w")
         f.write(":-multifile(maze/2).\n")
         (h,w) = self.grid.shape
-        f.write(f"maze({id},[{h},{w}],\n")
+        f.write(f"maze({id},{h}/{w},\n")
         f.write(np.array2string(self.grid,separator=",",prefix="\t", formatter={'int': get_char}))
         f.write("\n).")
         f.close()
