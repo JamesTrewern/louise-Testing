@@ -2,9 +2,13 @@ import numpy as np
 from PIL import Image, ImageOps
 import random
 
-SIZE = 3
+SIZE = 4
 DATA_FOLDER = "./Mazes"
 N = 10
+
+def get_char(n):
+    if n == 1: return 'f'
+    else: return 'w'
 
 class Maze:
     def __init__(self,w,h):
@@ -18,11 +22,11 @@ class Maze:
             for x in range(0,gw,2):
                 self.grid[y,x] = 1
         self.backtracking((0,0))
-        self.add_border()
+        # self.add_border()
         
     def display(self):
         img = Image.fromarray(self.grid*255)
-        # img = ImageOps.expand(img,border=1,fill='black')
+        img = ImageOps.expand(img,border=1,fill='black')
         img = img.resize((500,500), Image.BOX)
         # img.show()
         return img
@@ -83,9 +87,9 @@ class Maze:
         img.save(f"{DATA_FOLDER}/Images/{id}.png")
         f = open(f"{DATA_FOLDER}/Code/{id}.pl", "w")
         f.write(":-multifile(maze/2).\n")
-        f.write(f"maze({id},\n")
         (h,w) = self.grid.shape
-        f.write(np.array2string(self.grid,separator=",",prefix="\t"))
+        f.write(f"maze({id},[{h},{w}],\n")
+        f.write(np.array2string(self.grid,separator=",",prefix="\t", formatter={'int': get_char}))
         f.write("\n).")
         f.close()
 
