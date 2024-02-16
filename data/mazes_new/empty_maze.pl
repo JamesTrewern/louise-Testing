@@ -181,7 +181,6 @@ __ Testings __
 
 */
 
-
 % ========================================
 % Testing predicates
 % ========================================
@@ -276,57 +275,10 @@ testing_instance(solve_ll/2,zero,E):-
         ,E =.. [solve_ll,[zero,Xs/Ys,T1,[]],[zero,Xe/Ye,T2,_Vs]].
 
 
-%:-table solve/2.
-
-solve_ll(A,B):-move_down_ll(A,B).
-solve_ll(A,B):-move_left_ll(A,B).
-solve_ll(A,B):-move_right_ll(A,B).
-solve_ll(A,B):-move_up_ll(A,B).
-solve_ll(A,B):-move_down_ll(A,C),solve_ll(C,B).
-solve_ll(A,B):-move_left_ll(A,C),solve_ll(C,B).
-solve_ll(A,B):-move_right_ll(A,C),solve_ll(C,B).
-solve_ll(A,B):-move_up_ll(A,C),solve_ll(C,B).
-
-
-length_limit(2).
-
-move_down_ll([Id,X/Y,T,[]],S2):-
-        move_down([Id,X/Y,T,[]],S2).
-move_down_ll([Id,X/Y,T,Vs],S2):-
-        length(Vs,N)
-        ,length_limit(M)
-        ,N < M
-        ,move_down([Id,X/Y,T,Vs],S2).
-
-move_up_ll([Id,X/Y,T,[]],S2):-
-        move_up([Id,X/Y,T,[]],S2).
-move_up_ll([Id,X/Y,T,Vs],S2):-
-        length(Vs,N)
-        ,length_limit(M)
-        ,N < M
-        ,move_up([Id,X/Y,T,Vs],S2).
-
-move_left_ll([Id,X/Y,T,[]],S2):-
-        move_left([Id,X/Y,T,[]],S2).
-move_left_ll([Id,X/Y,T,Vs],S2):-
-        length(Vs,N)
-        ,length_limit(M)
-        ,N < M
-        ,move_left([Id,X/Y,T,Vs],S2).
-
-move_right_ll([Id,X/Y,T,[]],S2):-
-        move_right([Id,X/Y,T,[]],S2).
-move_right_ll([Id,X/Y,T,Vs],S2):-
-        length(Vs,N)
-        ,length_limit(M)
-        ,N < M
-        ,move_right([Id,X/Y,T,Vs],S2).
-
 
 % ========================================
-% Training datas
+% Training data
 % ========================================
-
 
 :-nodebug(_).
 %:-debug(learn).

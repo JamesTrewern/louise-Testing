@@ -20,8 +20,8 @@
 %       primitive moves and written to a new file, defined in
 %       primitives_file/1.
 %
-maze_file(data(drafts/ijcai_2024/mazes/'my_mazes/zero.pl')).
-maze_file(data(drafts/ijcai_2024/mazes/'my_mazes/four_mazes.pl')).
+maze_file(data(mazes_new/my_mazes/'zero.pl')).
+maze_file(data(mazes_new/my_mazes/'four_mazes.pl')).
 %maze_file(data(drafts/ijcai_2024/mazes/'Mazes_19-19/load_mazes.pl')).
 %maze_file(data(drafts/ijcai_2024/mazes/'Mazes_7-7/load_mazes.pl')).
 
@@ -31,7 +31,7 @@ maze_file(data(drafts/ijcai_2024/mazes/'my_mazes/four_mazes.pl')).
 %       Path to the Prolog Module holding primitive moves and maze maps.
 %
 %primitives_file('four_primitives.pl',primitives).
-primitives_file(data(drafts/ijcai_2024/mazes/'primitives.pl'),primitives).
+primitives_file(data(mazes_new/'primitives.pl'),primitives).
 
 
 %!      theme(?Theme) is semidet.
