@@ -1,6 +1,6 @@
 % Should both be in the same directory as this file.
 :-use_module(metagol).
-:-use_module(primitives).
+:-use_module(primitives_stack_based).
 
 metagol:max_clauses(8).
 metagol:max_inv_preds(0).
