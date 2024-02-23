@@ -1,5 +1,6 @@
 :-module(generator_configuration, [maze_file/1
                                   ,primitives_file/2
+                                  ,test_primitives_file/2
                                   ,theme/1
                                   ]).
 
@@ -22,16 +23,20 @@
 %
 maze_file(data(mazes_new/my_mazes/'zero.pl')).
 maze_file(data(mazes_new/my_mazes/'four_mazes.pl')).
-%maze_file(data(drafts/ijcai_2024/mazes/'Mazes_19-19/load_mazes.pl')).
-%maze_file(data(drafts/ijcai_2024/mazes/'Mazes_7-7/load_mazes.pl')).
 
 
 %!      primitives_file(?Path,?Module) is semidet.
 %
 %       Path to the Prolog Module holding primitive moves and maze maps.
 %
-%primitives_file('four_primitives.pl',primitives).
-primitives_file(data(mazes_new/'primitives.pl'),primitives).
+primitives_file(data(mazes_new/'primitives_stack_based.pl'),primitives).
+
+
+%!      test_primitives_file(?Path,?Module) is semidet.
+%
+%       Path and Module name for a file with primitives for testing.
+%
+test_primitives_file(data(mazes_new/'test_primitives.pl'),primitives).
 
 
 %!      theme(?Theme) is semidet.
