@@ -1,4 +1,5 @@
-:-module(generator_configuration, [maze_file/1
+:-module(generator_configuration, [action_representation/1
+                                  ,maze_file/1
                                   ,primitives_file/2
                                   ,test_primitives_file/2
                                   ,theme/1
@@ -6,6 +7,18 @@
 
 /** <module> Configuration options for move_generator and map_display.
 */
+
+%!      action_representation(?Representation) is semidet.
+%
+%       Whether the state vector will have an action-stack or not.
+%
+%       Currently known representations:
+%       * stack_based: the state vector has an action stack where action
+%       tokens are pushed to each time an action is taken.
+%       * memoryless: the state vector has no action stack.
+%
+%action_representation(stack_based).
+action_representation(memoryless).
 
 
 %!      maze_file(?Path) is semidet.

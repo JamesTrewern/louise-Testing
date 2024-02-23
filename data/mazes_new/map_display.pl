@@ -5,6 +5,7 @@
                       ]).
 
 :-use_module(generator_configuration).
+:-use_module(move_generator).
 
 /** <module> Pretty-print mazes in glorious ASCII.
 
@@ -241,6 +242,7 @@ execute_plan(M,C,(L),Acc,Ms):-
         ,L \= (_,_)
         ,safe_clause(M,L,B)
         ,extract_coords(L,Acc,Acc_)
+        ,avoid_oscillation(Acc_)
         ,update_count(C)
         ,execute_plan(M,C,B,Acc_,Ms).
 
@@ -376,6 +378,42 @@ include_coords(X/Y:D,Acc,[X/Y:D|Acc]):-
         ,\+ memberchk(X/Y,Acc)
         ,!.
 include_coords(_X/_Y:_D,Acc,Acc).
+
+
+%!      avoid_oscillation(+Path) is det.
+%
+%       Check a Path for oscillatory conditions.
+%
+%       Path is a list of coordinate triples X/Y:D, as returned by
+%       extract_coords/3. This is checked against the configuration
+%       predicate opposite_direction/2 to make sure that the last two
+%       coordinates added to Path are not conducive to an oscillation,
+%       such as a military oscillation (l,r,l,r,l,r, ...) or a Batman
+%       oscillation (d,u,d,u,d,u,,d,u, ....).
+%
+%       @tbd This predicate only checks an oscillatory pattern of up to
+%       two moves. We can go further than that!
+%
+avoid_oscillation([]):-
+        !.
+avoid_oscillation([_]):-
+        !.
+avoid_oscillation([_:D1,_:D2|_]):-
+        debug(avoid_oscillation,'Checking oscillation between ~w, ~w',[D1,D2])
+        ,\+ opposite_direction(D1,D2).
+
+
+%!      opposite_direction(?Direction,?Opposite) is semidet.
+%
+%       A Direction of movement and its Opposite.
+%
+%       Used to implement anti-oscillation constraints, Markovian or
+%       not.
+%
+opposite_direction(d,u).
+opposite_direction(u,d).
+opposite_direction(l,r).
+opposite_direction(r,l).
 
 
 
