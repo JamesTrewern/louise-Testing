@@ -1,10 +1,24 @@
-:-module(generator_configuration, [maze_file/1
+:-module(generator_configuration, [action_representation/1
+                                  ,maze_file/1
                                   ,primitives_file/2
+                                  ,test_primitives_file/2
                                   ,theme/1
                                   ]).
 
 /** <module> Configuration options for move_generator and map_display.
 */
+
+%!      action_representation(?Representation) is semidet.
+%
+%       Whether the state vector will have an action-stack or not.
+%
+%       Currently known representations:
+%       * stack_based: the state vector has an action stack where action
+%       tokens are pushed to each time an action is taken.
+%       * memoryless: the state vector has no action stack.
+%
+%action_representation(stack_based).
+action_representation(memoryless).
 
 
 %!      maze_file(?Path) is semidet.
@@ -22,16 +36,20 @@
 %
 maze_file(data(mazes_new/my_mazes/'zero.pl')).
 maze_file(data(mazes_new/my_mazes/'four_mazes.pl')).
-%maze_file(data(drafts/ijcai_2024/mazes/'Mazes_19-19/load_mazes.pl')).
-%maze_file(data(drafts/ijcai_2024/mazes/'Mazes_7-7/load_mazes.pl')).
 
 
 %!      primitives_file(?Path,?Module) is semidet.
 %
 %       Path to the Prolog Module holding primitive moves and maze maps.
 %
-%primitives_file('four_primitives.pl',primitives).
-primitives_file(data(mazes_new/'primitives.pl'),primitives).
+primitives_file(data(mazes_new/'primitives_stack_based.pl'),primitives).
+
+
+%!      test_primitives_file(?Path,?Module) is semidet.
+%
+%       Path and Module name for a file with primitives for testing.
+%
+test_primitives_file(data(mazes_new/'test_primitives.pl'),primitives).
 
 
 %!      theme(?Theme) is semidet.
