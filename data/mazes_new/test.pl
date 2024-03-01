@@ -80,6 +80,7 @@ preserve_and_reset_counter(C,C_):-
         ,nb_setarg(1,C_,J)
         ,nb_setarg(1,C,0).
 
+% Better not.
 %:-table(execute_plan/5).
 
 execute_plan(_M,_C,true,Ms,Ms):-
@@ -96,32 +97,21 @@ execute_plan(M,C,(L),Acc,Ms):-
         ,update_count(C)
         ,execute_plan(M,C,B,Acc_,Ms).
 
+
 safe_clause(M,L,true):-
         built_in_or_library_predicate(L)
         ,!
         ,call(M:L).
 safe_clause(M,L,B):-
         clause(M:L,B).
-update_count(C):-
-        arg(1,C,I)
-        ,succ(I,J)
-        ,nb_setarg(1,C,J).
+
+
 built_in_or_library_predicate(H):-
 	predicate_property(H, built_in)
 	,!.
 built_in_or_library_predicate(H):-
 	predicate_property(H, autoload(_)).
-avoid_oscillation([]):-
-        !.
-avoid_oscillation([_]):-
-        !.
-avoid_oscillation([_:D1,_:D2|_]):-
-        debug(avoid_oscillation,'Checking oscillation between ~w, ~w',[D1,D2])
-        ,\+ opposite_direction(D1,D2).
-opposite_direction(d,u).
-opposite_direction(u,d).
-opposite_direction(l,r).
-opposite_direction(r,l).
+
 
 extract_coords(L,Acc,Acc_2):-
         L =.. [Mv,S1,S2]
@@ -133,10 +123,12 @@ extract_coords(L,Acc,Acc_2):-
         ,!.
 extract_coords(_L,Acc,Acc).
 
+
 move_direction(move_down, d).
 move_direction(move_up, u).
 move_direction(move_left, l).
 move_direction(move_right, r).
+
 
 include_coords(X/Y:D,Acc,[X/Y:D|Acc]):-
 % Start and end are already ground so this excludes them
@@ -145,3 +137,24 @@ include_coords(X/Y:D,Acc,[X/Y:D|Acc]):-
         ,\+ memberchk(X/Y,Acc)
         ,!.
 include_coords(_X/_Y:_D,Acc,Acc).
+
+
+avoid_oscillation([]):-
+        !.
+avoid_oscillation([_]):-
+        !.
+avoid_oscillation([_:D1,_:D2|_]):-
+        debug(avoid_oscillation,'Checking oscillation between ~w, ~w',[D1,D2])
+        ,\+ opposite_direction(D1,D2).
+
+
+opposite_direction(d,u).
+opposite_direction(u,d).
+opposite_direction(l,r).
+opposite_direction(r,l).
+
+
+update_count(C):-
+        arg(1,C,I)
+        ,succ(I,J)
+        ,nb_setarg(1,C,J).
