@@ -33,7 +33,7 @@ map_row_to_steps(Pred, row(ID,A,B,C,D),row(ID,A,B,C,D,Steps)):-
     test_id(ID,Pred,Steps).
 
 run_tests:-
-    csv_read_file('./test_mazes/data.csv', [row(A,B,C,D,E)|Rows1]),
+    csv_read_file('./test_mazes/data.csv', [row(A,B,C,D,_E)|Rows1]),
     maplist(map_row_to_steps(solve),Rows1,Rows2),
     csv_write_file('./test_mazes/results.csv', [row(A,B,C,D,rl,louise)|Rows2]).
 
