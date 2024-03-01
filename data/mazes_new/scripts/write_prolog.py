@@ -61,6 +61,8 @@ def matrix_to_prolog(maze:np.ndarray, id: int, folder: str = "."):
     maze = maze[2]
     bucketize(maze)
     maze = cv2.resize(maze, dsize=(16,16), interpolation=cv2.INTER_NEAREST)
+    plt.imshow(maze)
+    plt.savefig(f"{folder}/Images/{id}.png")
     sx,sy = find_start(maze)
     ex,ey = find_end(maze)
     lines = [
