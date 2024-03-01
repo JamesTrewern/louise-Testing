@@ -80,8 +80,6 @@ preserve_and_reset_counter(C,C_):-
         ,nb_setarg(1,C_,J)
         ,nb_setarg(1,C,0).
 
-% Better not.
-%:-table(execute_plan/5).
 
 execute_plan(_M,_C,true,Ms,Ms):-
         !.
@@ -92,18 +90,26 @@ execute_plan(M,C,(L),Acc,Ms):-
         L \== true
         ,L \= (_,_)
         ,safe_clause(M,L,B)
-        ,extract_coords(L,Acc,Acc_)
-        ,avoid_oscillation(Acc_)
-        ,update_count(C)
+        ,debug(execute_plan,'Literal-Body: ~w - ~w',[L,B])
+        ,record_last_action(L,Acc,C,Acc_)
         ,execute_plan(M,C,B,Acc_,Ms).
 
-
+% safe_clause/2 now only meta-interprets top-level move actions, i.e.
+% move_up/2, move_down/2, move_right/2 and move_left/2, and the target
+% predicate, solve/2. It hands off everything else to the Prolog engine.
+% That's so we can count only the calls to move actions. Note
+% that this _includes_ backtracking over the move actions.
 safe_clause(M,L,true):-
         built_in_or_library_predicate(L)
         ,!
         ,call(M:L).
-safe_clause(M,L,B):-
-        clause(M:L,B).
+safe_clause(M,L,true):-
+        action_predicate(L)
+        ,call(M:L)
+        % Stops unnecessary backtracking over this action.
+        ,!.
+safe_clause(M,solve(S1,S2),B):-
+        clause(M:solve(S1,S2),B).
 
 
 built_in_or_library_predicate(H):-
@@ -113,45 +119,30 @@ built_in_or_library_predicate(H):-
 	predicate_property(H, autoload(_)).
 
 
-extract_coords(L,Acc,Acc_2):-
-        L =.. [Mv,S1,S2]
-        ,move_direction(Mv,D)
-        ,S1 = [Id,X1/Y1|_]
-        ,S2 = [Id,X2/Y2|_]
-        ,include_coords(X1/Y1:D,Acc,Acc_1)
-        ,include_coords(X2/Y2:D,Acc_1,Acc_2)
-        ,!.
-extract_coords(_L,Acc,Acc).
+% Used to filter out non-move actions.
+action_predicate(move_up(_,_)).
+action_predicate(move_down(_,_)).
+action_predicate(move_left(_,_)).
+action_predicate(move_right(_,_)).
+
+% update_count/1 is moved here to ensure we're only counting the
+% instances of move actions that are meta-interpreted.
+record_last_action(L,Acc,C,L):-
+    once(action_predicate(L))
+    ,\+ opposite_moves(L,Acc)
+    ,update_count(C)
+    ,!.
+record_last_action(L,Acc,_C,Acc):-
+% TODO: should we count this move too? It's rejected.
+    \+ opposite_moves(L,Acc)
+%    ,update_count(C)
+    .
 
 
-move_direction(move_down, d).
-move_direction(move_up, u).
-move_direction(move_left, l).
-move_direction(move_right, r).
-
-
-include_coords(X/Y:D,Acc,[X/Y:D|Acc]):-
-% Start and end are already ground so this excludes them
-%        \+ ground(X/Y:D)
-        ground(X/Y:D)
-        ,\+ memberchk(X/Y,Acc)
-        ,!.
-include_coords(_X/_Y:_D,Acc,Acc).
-
-
-avoid_oscillation([]):-
-        !.
-avoid_oscillation([_]):-
-        !.
-avoid_oscillation([_:D1,_:D2|_]):-
-        debug(avoid_oscillation,'Checking oscillation between ~w, ~w',[D1,D2])
-        ,\+ opposite_direction(D1,D2).
-
-
-opposite_direction(d,u).
-opposite_direction(u,d).
-opposite_direction(l,r).
-opposite_direction(r,l).
+opposite_moves(move_up(_,_),move_down(_,_)).
+opposite_moves(move_down(_,_),move_up(_,_)).
+opposite_moves(move_left(_,_),move_right(_,_)).
+opposite_moves(move_right(_,_),move_left(_,_)).
 
 
 update_count(C):-
