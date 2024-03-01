@@ -9,7 +9,6 @@ load_file_from_row(row(_,Name,_,_,_)):-
 
 :- table(solve/2).
 
-
 move_left(S1,S2):-
     step_left(S1,S2).
 move_down(S1,S2):-
@@ -18,6 +17,7 @@ move_right(S1,S2):-
     step_right(S1,S2).
 move_up(S1,S2):-
     step_up(S1,S2).
+
 solve(A,B):-move_down(A,B).
 solve(A,B):-move_left(A,B).
 solve(A,B):-move_right(A,B).
