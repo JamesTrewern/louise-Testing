@@ -15,7 +15,7 @@
 :-user:use_module(map_display).
 :-reexport(actions).
 % Load test script.
-:-use_module(testing).
+:-ensure_loaded(testing).
 
 :- generator_configuration:action_representation(R)
    ,format('Loaded actions in ~w representation.~n',[R]).
@@ -216,6 +216,7 @@ background_knowledge(solve/2, [move_down/2
                               ,move_right/2
                               ,move_up/2
                               ]).
+
 
 %metarules(solve/2,[identity,chain]).
 metarules(solve/2,[identity,tailrec]).

@@ -2,6 +2,7 @@
                       ,trace_path/2
                       ,trace_path/3
                       ,trace_path/4
+                      ,execute_plan/5
                       ]).
 
 :-use_module(generator_configuration).
