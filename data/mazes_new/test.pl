@@ -18,7 +18,6 @@ move_right(S1,S2):-
     step_right(S1,S2).
 move_up(S1,S2):-
     step_up(S1,S2).
-
 solve(A,B):-move_down(A,B).
 solve(A,B):-move_left(A,B).
 solve(A,B):-move_right(A,B).
@@ -56,12 +55,13 @@ test_id(Id,Pred,N):-
 %       execute_plan/5 to generate a path through a maze and count the
 %       steps needed to find it, without printing out the result.
 %
-solve_maze(E,C_):-
+solve_maze(E,N):-
         C = c(0)
         ,C_ = c(0)
         ,debug(trace_path,'Finding a path...',[])
         ,time(execute_plan(test,C,E,[],_Cs) )
         ,preserve_and_reset_counter(C,C_)
+        ,arg(1,C_,N)
         % execute_plan/5 may backtrack unnecessarily.
         ,!.
 solve_maze(_E,_C):-
@@ -80,7 +80,7 @@ preserve_and_reset_counter(C,C_):-
         ,nb_setarg(1,C_,J)
         ,nb_setarg(1,C,0).
 
-:-table(execute_plan/5).
+%:-table(execute_plan/5).
 
 execute_plan(_M,_C,true,Ms,Ms):-
         !.
@@ -91,8 +91,8 @@ execute_plan(M,C,(L),Acc,Ms):-
         L \== true
         ,L \= (_,_)
         ,safe_clause(M,L,B)
-        % ,extract_coords(L,Acc,Acc_)
-        % ,avoid_oscillation(Acc_)
+        ,extract_coords(L,Acc,Acc_)
+        ,avoid_oscillation(Acc_)
         ,update_count(C)
         ,execute_plan(M,C,B,Acc_,Ms).
 
