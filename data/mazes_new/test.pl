@@ -89,26 +89,31 @@ execute_plan(M,C,(L,Ls),Acc,Ms):-
 execute_plan(M,C,(L),Acc,Ms):-
         L \== true
         ,L \= (_,_)
-        ,safe_clause(M,L,B)
+        ,safe_clause(M,L,C,B)
         ,debug(execute_plan,'Literal-Body: ~w - ~w',[L,B])
-        ,record_last_action(L,Acc,C,Acc_)
+        ,record_last_action(L,Acc,Acc_)
         ,execute_plan(M,C,B,Acc_,Ms).
+
 
 % safe_clause/2 now only meta-interprets top-level move actions, i.e.
 % move_up/2, move_down/2, move_right/2 and move_left/2, and the target
 % predicate, solve/2. It hands off everything else to the Prolog engine.
 % That's so we can count only the calls to move actions. Note
 % that this _includes_ backtracking over the move actions.
-safe_clause(M,L,true):-
+safe_clause(M,L,_C,true):-
         built_in_or_library_predicate(L)
         ,!
         ,call(M:L).
-safe_clause(M,L,true):-
+safe_clause(M,L,C,true):-
+% C is updated here, after we check L is a listeral of a move predicate
+% but before we call the predicate, so we count it even if it fails.
+% That way we include backtracking to the cost of solving.
         action_predicate(L)
+        ,update_count(C)
         ,call(M:L)
         % Stops unnecessary backtracking over this action.
         ,!.
-safe_clause(M,solve(S1,S2),B):-
+safe_clause(M,solve(S1,S2),_C,B):-
         clause(M:solve(S1,S2),B).
 
 
@@ -125,18 +130,14 @@ action_predicate(move_down(_,_)).
 action_predicate(move_left(_,_)).
 action_predicate(move_right(_,_)).
 
-% update_count/1 is moved here to ensure we're only counting the
-% instances of move actions that are meta-interpreted.
-record_last_action(L,Acc,C,L):-
+% Records actions and avoids oscillation two-in-one.
+
+record_last_action(L,Acc,L):-
     once(action_predicate(L))
     ,\+ opposite_moves(L,Acc)
-    ,update_count(C)
     ,!.
-record_last_action(L,Acc,_C,Acc):-
-% TODO: should we count this move too? It's rejected.
-    \+ opposite_moves(L,Acc)
-%    ,update_count(C)
-    .
+record_last_action(L,Acc,Acc):-
+    \+ opposite_moves(L,Acc).
 
 
 opposite_moves(move_up(_,_),move_down(_,_)).
