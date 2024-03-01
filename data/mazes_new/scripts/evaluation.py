@@ -43,5 +43,13 @@ def get_accuracy(df: DataFrame, n: int = N, max_time: int = 300.0, sizes: list =
 df = pd.read_csv("../test_mazes/results.csv")
 avg = get_average_times(df)
 acc = get_accuracy(df)
-print(avg)
-print(acc)
+
+# y1 = list(avg["louise"])
+
+plt.plot([5,10,15],list(avg["rl"]),label="rl")
+plt.plot([5,10,15],list(avg["louise"]),label="louise")
+plt.xticks([5,10,15])
+plt.legend(loc="upper left")
+plt.ylabel("Average Steps")
+plt.xlabel("Maze Dimensions")
+plt.show()
