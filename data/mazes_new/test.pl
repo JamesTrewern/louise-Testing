@@ -35,7 +35,7 @@ map_row_to_steps(Pred, row(ID,A,B,C,D),row(ID,A,B,C,D,Steps)):-
 run_tests:-
     csv_read_file('./test_mazes/data.csv', [row(A,B,C,D,E)|Rows1]),
     maplist(map_row_to_steps(solve),Rows1,Rows2),
-    csv_write_file('./test_mazes/results.csv', [row(A,B,C,D,E,rl,louise)|Rows2]).
+    csv_write_file('./test_mazes/results.csv', [row(A,B,C,D,rl,louise)|Rows2]).
 
 test_id(Id,Pred,N):-
     % findall(Id/Dims,(PM:maze(Id,Dims,_),Id \== zero),Ids)
