@@ -1,2 +1,16 @@
 id,File Name,Numpy Name,Size,Number of steps
 1,1.pl,maze_5x5_27.npy,5x5,27
+2,2.pl,maze_5x5_27.npy,5x5,91
+3,3.pl,maze_5x5_99.npy,5x5,99
+4,4.pl,maze_5x5_353.npy,5x5,353
+5,5.pl,maze_5x5_363.npy,5x5,363
+6,6.pl,maze_10x10_52.npy,10x10,52
+7,7.pl,maze_10x10_116.npy,10x10,116
+8,8.pl,maze_10x10_584.npy,10x10,584
+9,9.pl,maze_10x10_631.npy,10x10,631
+10,10.pl,maze_10x10_803.npy,10x10,803
+11,11.pl,maze_15x15_977.npy,15x15,977
+12,12.pl,maze_15x15_983.npy,15x15,983
+13,13.pl,maze_15x15_2163.npy,15x15,2163
+14,14.pl,maze_15x15_2910.npy,15x15,2910
+15,15.pl,maze_15x15_3075.npy,15x15,3075
