@@ -2,6 +2,7 @@
 :-use_module(metagol).
 :-use_module(primitives_memory_less).
 
+metagol:min_clauses(8).
 metagol:max_clauses(8).
 metagol:max_inv_preds(0).
 
