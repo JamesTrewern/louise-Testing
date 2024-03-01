@@ -2,10 +2,12 @@ import pandas as pd
 import numpy as np
 import write_prolog
 
-df = pd.read_csv("./data.csv")
+TEST_DATA_DIR = "../test_mazes"
+
+df = pd.read_csv(TEST_DATA_DIR + "/data.csv")
 for idx, row in df.iterrows():
-    maze = np.load(row["Numpy Name"])
-    write_prolog.matrix_to_prolog(maze,idx+1)
+    maze = np.load(f"{TEST_DATA_DIR}/{row['Numpy Name']}")
+    write_prolog.matrix_to_prolog(maze,idx+1,TEST_DATA_DIR)
 
 
 # maze = np.array([[0,0.5],[1,0]])
