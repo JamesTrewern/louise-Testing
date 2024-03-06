@@ -389,8 +389,8 @@ example_clauses(call).
 % experiment_file('data/towers_of_hanoi.pl',towers_of_hanoi).
 % experiment_file('data/towers_of_hanoi/toh.pl',towers_of_hanoi).
 %experiment_file('data/maze_solver/ms.pl',maze_solver).
-experiment_file('data/mazes_new/empty_maze.pl',empty_maze).
-
+%experiment_file('data/mazes_new/empty_maze.pl',empty_maze).
+experiment_file('data/obstacle_avoidance/model/data/basic_sim_experiments.pl',basic_sim_xp).
 
 
 

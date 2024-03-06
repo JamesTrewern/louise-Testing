@@ -1,0 +1,8 @@
+Results of the experiments reported in IJCAI24 submission "True One-Shot
+Learning of Finite State Automata from human knowledge: a Meta-Interpretive
+Learning approach to autonomous behaviour".
+
+Includes:
+a) Python scripts output by obstacle_avoidance/0 script in model/data/basic_sim_experiments.pl
+b) .png images visualising paths in python scripts.
+c) experiment_results.csv tabulating results.

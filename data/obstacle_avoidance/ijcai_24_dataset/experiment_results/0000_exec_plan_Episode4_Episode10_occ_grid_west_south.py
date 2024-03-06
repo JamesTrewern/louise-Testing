@@ -1,0 +1,12 @@
+import survey_simulation
+ss = survey_simulation.SurveySimulation(mode='test', save_loc='../episodes/playback/Episode10')
+ss.new_action('move',[40.0,60.0])
+ss.new_action('move',[50.0,60.0])
+ss.new_action('move',[50.0,70.0])
+ss.new_action('move',[50.0,80.0])
+ss.new_action('move',[60.0,80.0])
+ss.new_action('move',[70.0,90.0])
+ss.new_action('move',[80.0,90.0])
+ss.new_action('move',[90.0,80.0])
+ss.save_episode()
+ss_pb = survey_simulation.SurveySimulation('playback',save_loc='../episodes/playback/Episode10/Episode0')

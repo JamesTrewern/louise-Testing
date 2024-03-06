@@ -1,0 +1,20 @@
+agent_start: (30., 30.) 
+map_n: 2
+scan_width: 20.
+leadinleadout: 0.
+min_scan_l: 0.
+nadir_width: 3.
+agent_speed: 20.
+scan_area_lims: (30, 200, 30, 100)
+map_area_lims: (0, 220, 0, 120) 
+n_targets: 3 
+n_clutter: 3 
+det_probs: (0.4, 0.9) 
+loc_uncertainty: 3.
+det_prob_clutter: 0.1 
+time_lim: 500.
+min_scan_angle_diff: 30 
+N_looks: 3 
+N_angles: 6
+grid_res: 10
+rand_seed: 100
