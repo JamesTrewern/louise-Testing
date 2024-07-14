@@ -387,16 +387,16 @@ example_clauses(call).
 %	The Path and Module name of an experiment file.
 %
 %experiment_file('data/examples/hello_world.pl',hello_world).
-experiment_file('data/examples/tiny_kinship.pl',tiny_kinship).
-%experiment_file('data/examples/anbn.pl',anbn).
+% experiment_file('data/examples/tiny_kinship.pl',tiny_kinship).
+% experiment_file('data/examples/anbn.pl',anbn).
 %experiment_file('data/examples/abduced.pl',abduced).
 %experiment_file('data/examples/user_metarules.pl',user_metarules).
 %experiment_file('data/examples/constraints.pl',constraints).
-%experiment_file('data/examples/mtg_fragment.pl',mtg_fragment).
+% experiment_file('data/examples/mtg_fragment.pl',mtg_fragment).
 %experiment_file('data/examples/recipes.pl',recipes).
 %experiment_file('data/examples/example_invention.pl',path).
-%experiment_file('data/robots/robots.pl',robots).
-%experiment_file('data/coloured_graph/coloured_graph.pl',coloured_graph).
+% experiment_file('data/robots/robots.pl',robots).
+experiment_file('data/coloured_graph/coloured_graph.pl',coloured_graph).
 %experiment_file('data/examples/multi_pred.pl',multi_pred).
 %experiment_file('data/examples/tiny_kinship_toil.pl',tiny_kinship_toil).
 %experiment_file('data/examples/yamamoto.pl',yamamoto).

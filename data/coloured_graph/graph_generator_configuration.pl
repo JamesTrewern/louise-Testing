@@ -53,9 +53,9 @@ mislabelling_probability(0.2).
 %       false_negatives].
 %
 mislabelling_type(no_noise).
-%mislabelling_type(ambiguities).
-%mislabelling_type(false_positives).
-%mislabelling_type(false_negatives).
+% mislabelling_type(ambiguities).
+% mislabelling_type(false_positives).
+% mislabelling_type(false_negatives).
 
 
 %!      output_root(?Directory) is semidet.
