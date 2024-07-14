@@ -30,7 +30,9 @@
 		      ,list_learning_results/0
 		      ,list_mil_problem/1
 		      ,list_mil_problem_thelma/1
+	              ,list_problem_element/2
 		      ,list_problem_statistics/1
+		      ,list_resources/0
 		      ,list_top_program_reduction/1
 		      ,list_top_program/1
 		      ,list_top_program/3
@@ -145,7 +147,9 @@ Table of Contents
    * list_learning_results/0
    * list_mil_problem/1
    * list_mil_problem_thelma/1
+   * list_problem_element/2
    * list_problem_statistics/1
+   * list_resources/0
    * list_top_program_reduction/1
    * list_top_program/1
    * list_top_program/3
@@ -1005,7 +1009,7 @@ list_encapsulated_problem(Ts):-
 	,format_underlined('Negative examples')
 	,print_limited(L,Neg_)
 	,nl
-	,format_underlined('Background knowledge')
+	,format_underlined('Background knowledge (First Order)')
 	,forall(member(P,BK)
 	       ,(encapsulated_bk([P],Ts,Ps)
 		,format('~w:~n',[P])
@@ -1013,9 +1017,8 @@ list_encapsulated_problem(Ts):-
 		,nl
 		)
 	       )
-	,nl
 	,expanded_metarules(MS,MS_)
-	,format_underlined('Metarules')
+	,format_underlined('Background knowledge (Second Order)')
 	,print_metarules(expanded,MS_).
 
 
@@ -1146,7 +1149,7 @@ list_mil_problem(Pos,Neg,BK,MS):-
 	,format_underlined('Negative examples')
 	,print_limited(L,Neg)
 	,nl
-	,format_underlined('Background knowledge')
+	,format_underlined('Background knowledge (First Order)')
 	,forall(member(P,BK)
 	       ,(program(P,experiment_file,Ps)
 		,format('~w:~n',[P])
@@ -1154,7 +1157,7 @@ list_mil_problem(Pos,Neg,BK,MS):-
 		,format('~n',[])
 		)
 	       )
-	,format_underlined('Metarules')
+	,format_underlined('Background knowledge(Second Order)')
 	,print_metarules(quantified,MS).
 
 
@@ -1249,6 +1252,65 @@ prettify_vars(Vs,T,Ps):-
 
 
 
+%!	list_problem_element(+Target,+What) is det.
+%
+%	List a named element of a MIL problem for a learning Target.
+%
+%	What is a costant denoting the MIL problem element to be
+%	printed. The printed element is as declared in the experiment
+%	file interface predicates, e.g. BK is printed as symbols and
+%	names or metarule ids.
+%
+%	Recognised values for What are as follows:
+%	* Positive examples: pos, positives, positive_examples
+%	* Negative examples: neg, negatives, negative_examples
+%	* First-Order BK: bk, background_knowledge, first_order_theory,
+%	first_order_bk
+%	* Second-Order BK: ms, metarules, second_order_theory, second_order_bk
+%
+%	Output is limited by the value of configuration option
+%	listing_limit/1.
+%
+%	Example query:
+%	==
+%	?- auxiliaries:list_problem_element(hall_a/2,first_order_bk).
+%	t0/2.
+%	t1/2.
+%	t2/2.
+%	t3/2.
+%	t4/2.
+%	t5/2.
+%	t6/2.
+%	t7/2.
+%	t8/2.
+%	t9/2.
+%	% ... 390 more clauses.
+%	true.
+%	==
+%
+list_problem_element(Ts,W):-
+	configuration:listing_limit(L)
+	,experiment_data(Ts,Pos,Neg,BK,MS)
+	,Ls = [pos-Pos
+	      ,positives-Pos
+	      ,positive_examples-Pos
+	      ,neg-Neg
+	      ,negatives-Neg
+	      ,negative_examples-Neg
+	      ,bk-BK
+	      ,background_knowledge-BK
+	      ,first_order_theory-BK
+	      ,first_order_bk-BK
+	      ,ms-MS
+	      ,metarules-MS
+	      ,second_order_theory-MS
+	      ,second_order_bk-MS
+	      ]
+	,selectchk(W-Xs,Ls,_)
+	,print_limited(L,Xs).
+
+
+
 %!	list_problem_statistics(+Target) is det.
 %
 %	List statistics of the MIL problem for Target.
@@ -1265,6 +1327,18 @@ list_problem_statistics(T):-
 	,format('Negative examples:    ~w~n', [J])
 	,format('Background knowledge: ~w ~w~n', [K,BK])
 	,format('Metarules:            ~w ~w ~n', [N,MS]).
+
+
+
+%!	list_resources is det.
+%
+%	List RAM limits for stacks and tabling.
+%
+list_resources:-
+	current_prolog_flag(stack_limit, S)
+	,current_prolog_flag(table_space, T)
+	,format('Global stack limit ~D~n',[S])
+	,format('Table space ~D~n',[T]).
 
 
 
