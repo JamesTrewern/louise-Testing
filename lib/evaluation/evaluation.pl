@@ -227,14 +227,14 @@ data_partitions(S,Pos,Neg,Pos_Train,Neg_Train,Pos_Test,Neg_Test):-
 %
 %	Raises error if Size is equal to 1.0 or 0.0.
 %
-train_test__splits(P,[],[],[]):-
-% There may be no negative examples.
-% But this better not be the positive examples.
-	(   P > 0
-	->  throw('The size of an empty partition must be equal to 0!')
-	;   true
-	)
-	,!.
+% train_test__splits(P,[],[],[]):-
+% % There may be no negative examples.
+% % But this better not be the positive examples.
+% 	(   P > 0
+% 	->  throw('The size of an empty partition must be equal to 0!')
+% 	;   true
+% 	)
+% 	,!.
 train_test_splits(P,_Es,_Train,_Test):-
 	float(P)
 	,P >= 1.0
