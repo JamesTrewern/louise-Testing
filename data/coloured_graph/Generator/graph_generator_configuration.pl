@@ -6,6 +6,7 @@
                                         ,target_prefix_arity/2
                                         ]).
 
+:- dynamic mislabelling_type/1.
 
 %!      background_knowledge(-Predicates) is semidet.
 %

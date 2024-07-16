@@ -6,6 +6,7 @@
 		     ,standard_deviation/3
 		     ,pairs_averages/2
 		     ,standard_error/3
+			 ,pairs_std_error/3
 		     ]).
 
 :-use_module(library(clpfd), [transpose/2]).
@@ -221,3 +222,16 @@ pairs_sd(Ps,As,SDs):-
 		 ,nth1(I,As,Av)
 		 ,standard_deviation(Col,Av,SD))
 		,SDs).
+
+pairs_std_error(Ps,SDs,StdErrs):-
+	findall(Vs
+	       ,(member(P,Ps)
+		,pairs_keys_values(P,_Ks,Vs)
+		)
+	       ,VS)
+	,transpose(VS,VS_T)
+	,findall(StdErr
+		,(nth1(I,VS_T,Col)
+		 ,nth1(I,SDs,SD)
+		 ,standard_error(Col,SD,StdErr))
+		,StdErrs).

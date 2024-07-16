@@ -30,9 +30,12 @@
 
 % Also loads generator configuration, world.pl and render.pl
 :- user:use_module(move_generator).
+:- move_generator:write_dataset.
 % Stops Swi from raising exception on move/2. No idea why.
 :- dataset_file_name(_,Fn)
   ,user:use_module(Fn).
+
+
 
 
 /* % Uncomment to work on a new dataset or debuggin of tasks.

@@ -235,6 +235,29 @@ log_experiment_results(M,Ms,SDs):-
 	,debug(learning_curve,'Standard deviations: ~w',[SDs]).
 
 
+
+unzip([],[],[]).
+unzip([K-(A,T)|KVs],[K-A|As],[K-T|Ts]):-
+	unzip(KVs,As,Ts).
+
+exrtact_values(Zipped_Rs, TimeAvgs,TimeSDs,TimeStdErrs,MetricAvgs,MetricSDs,MetricStdErrs):-
+	Zipped_Rs \= []
+	,maplist(unzip, Zipped_Rs, Metrics, Times)
+	,pairs_averages(Metrics,MetricAvgs)
+	,pairs_averages(Times,TimeAvgs)
+	,pairs_sd(Metrics,MetricAvgs,MetricSDs)
+	,pairs_sd(Times,TimeAvgs,TimeSDs)
+	,pairs_std_error(Metrics,MetricSDs,MetricStdErrs)
+	,pairs_std_error(Times,TimeSDs,TimeStdErrs).
+
+compile_rows_heading(Splits, TAs,TSDs,TStdErrs,MAs,MSDs,MStdErrs,[Headers|Rows]):-
+	Headers = row(split,mean_time,sd_time,std_err_time,mean_accuracy,sd_accuracy,std_err_accuracy),
+	compile_rows(Splits, TAs,TSDs,TStdErrs,MAs,MSDs,MStdErrs,Rows).
+compile_rows([Split|Splits],[TA|TAs],[TSD|TSDs],[TStdErr|TStdErrs],[MA|MAs],[MSD|MSDs],[MStdErr|MStdErrs],[Row|Rows]):-
+	Row = row(Split, TA,TSD,TStdErr,MA,MSD,MStdErr),
+	compile_rows(Splits,TAs,TSDs,TStdErrs,MAs,MSDs,MStdErrs,Rows).
+compile_rows([],[],[],[],[],[],[],[]).	
+
 % ================================================================================
 % Experiment code
 % ================================================================================
@@ -269,15 +292,20 @@ learning_curve(T,M,K,Ss,Ms,SDs):-
 	,learning_curve_configuration:learning_curve_time_limit(L)
 	,log_experiment_setup(T,L,M,K,Ss)
 	,experiment_data(T,Pos,Neg,BK,MS)
-	,learning_curve(T,L,[Pos,Neg,BK,MS],M,K,Ss,Rs)
-	,Rs \= []
-	,pairs_averages(Rs,Ms)
-	,pairs_sd(Rs,Ms,SDs)
-	% Print results to logging stream
-	,log_experiment_results(M,Ms,SDs)
-	% Print R vectors for plotting
-	,print_r_vectors(T,M,Ss,Ms,SDs)
-	,close_log(learning_curve).
+	,learning_curve(T,L,[Pos,Neg,BK,MS],M,K,Ss,Zipped_Rs)
+	,exrtact_values(Zipped_Rs, TimeAvgs,TimeSDs,TimeStdErrs,MetricAvgs,MetricSDs,MetricStdErrs)
+	,compile_rows_heading(Ss,TimeAvgs,TimeSDs,TimeStdErrs,MetricAvgs,MetricSDs,MetricStdErrs,Rows)
+	,T = Symbol/_Arity
+	,atomic_list_concat(['results/', Symbol, '.csv'], FileName)
+	,csv_write_file(FileName, Rows).
+	
+	
+
+	% % Print results to logging stream
+	% ,log_experiment_results(M,Ms,SDs)
+	% % Print R vectors for plotting
+	% ,print_r_vectors(T,M,Ss,Ms,SDs)
+	% ,close_log(learning_curve).
 
 %!	learning_curve(+Target,+Limit,+Problem,+Metric,+Steps,+Samples,-Results)
 %!	is det.

@@ -135,16 +135,21 @@ timed_train_and_test(T,S,L,[Pos,Neg,BK,MS],Ps,M,V):-
 	,G = learning_query(Pos_Train,Neg_Train,BK,MS,Ps)
 	,C = call_with_time_limit(L,G)
 	,debug(evaluation, 'Learning program...', [])
+	,Start is cputime
 	,catch(C,time_limit_exceeded,(Ps=[]
 				     ,cleanup_experiment
 				     ,debug(evaluation,'Time limit exceeded',[])
 				     )
 	      )
+	,End is cputime
+	,Time is End - Start
 	,debug(evaluation, 'Evaluating learned program...', [])
 	,program_results(T,Ps,BK,Rs)
 	,evaluation(Rs,Pos_Test,Neg_Test,_Ts,_Bs,Cs)
-	,once(metric(M,Cs,V))
-	,debug(evaluation, 'Completed evaluation. ~w: ~w', [M,V]).
+	% ,writeln(Cs)
+	,once(metric(M,Cs,V1))
+	,V = (V1,Time)
+	,debug(evaluation, 'Completed evaluation. ~w: ~w', [M,V1]).
 
 
 
